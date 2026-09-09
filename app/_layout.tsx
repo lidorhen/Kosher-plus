@@ -213,6 +213,10 @@ function RootLayoutNav() {
                 : { title: 'ברוכים הבאים', headerShown: true }
             }
           />
+          <Stack.Screen
+            name="workout-session"
+            options={{ title: 'אימון', headerShown: true }}
+          />
         </Stack>
       )}
     </ThemeProvider>
