@@ -1,0 +1,35 @@
+# Copy this file to .github/workflows/ci.yml in the Kosher-plus repo after the first GitHub push.
+# העתק לקובץ .github/workflows/ci.yml בריפו אחרי ה־push הראשון.
+# Draft only — lives under fitness-plus-infra/, NOT inside Kosher-plus.
+# Require package-lock.json in the repo — npm ci fails without it. ודאו ש־package-lock נדחף ל־GitHub.
+
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  typecheck:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: TypeScript check
+        run: npx tsc --noEmit
+
+      - name: Expo doctor (optional)
+        continue-on-error: true
+        run: npx expo-doctor
