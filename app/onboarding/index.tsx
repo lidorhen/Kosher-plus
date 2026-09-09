@@ -1,6 +1,7 @@
 import { router } from 'expo-router';
 import { useMemo, useState } from 'react';
 import {
+  Alert,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -9,6 +10,8 @@ import {
 } from 'react-native';
 import { NumberWheel } from '@/components/NumberWheel';
 import Colors from '@/constants/Colors';
+import { setCachedOnboardingCompleted } from '@/lib/authGate';
+import { getSupabase, isSupabaseConfigured } from '@/lib/supabase';
 
 type Gender = 'male' | 'female';
 type Goal = 'weight_loss' | 'tone' | 'strength' | 'general';
@@ -130,9 +133,47 @@ export default function OnboardingScreen() {
     }
   }
 
-  function finish() {
-    // M1α: local state only — persist later (Supabase profiles)
-    void { gender, goal, bodyType, weightKg, heightCm, trainingDays };
+  async function finish() {
+    // M1α without env: local state only
+    if (!isSupabaseConfigured) {
+      void { gender, goal, bodyType, weightKg, heightCm, trainingDays };
+      router.replace('/(tabs)/workouts');
+      return;
+    }
+
+    const client = getSupabase();
+    if (!client) {
+      router.replace('/(tabs)/workouts');
+      return;
+    }
+
+    const { data: sessionData, error: sessionError } = await client.auth.getSession();
+    if (sessionError || !sessionData.session?.user) {
+      Alert.alert('כושר פלוס', 'יש להתחבר לפני שמירת האונבורדינג.');
+      return;
+    }
+
+    const userId = sessionData.session.user.id;
+    const { error } = await client.from('profiles').upsert(
+      {
+        id: userId,
+        gender,
+        goal,
+        body_type: bodyType,
+        weight_kg: weightKg,
+        height_cm: heightCm,
+        training_days: trainingDays,
+        onboarding_completed: true,
+      },
+      { onConflict: 'id' },
+    );
+
+    if (error) {
+      Alert.alert('כושר פלוס', `שמירת הפרופיל נכשלה: ${error.message}`);
+      return;
+    }
+
+    await setCachedOnboardingCompleted(userId, true);
     router.replace('/(tabs)/workouts');
   }
 
