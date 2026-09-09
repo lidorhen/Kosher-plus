@@ -8,7 +8,7 @@ export type Exercise = {
   cueHe?: string;
 };
 
-/** Read-only Hebrew calisthenics library (~25) with search aliases. */
+/** Read-only Hebrew calisthenics library (~35) with search aliases. */
 export const EXERCISES: Exercise[] = [
   {
     id: 'ex_pushup',
@@ -41,7 +41,7 @@ export const EXERCISES: Exercise[] = [
     nameEn: 'Parallel Dip',
     category: 'push',
     level: 'intermediate',
-    aliases: ['דיפים', 'dips', 'dip', 'מקבילים', 'parallel dips', 'מקביל'],
+    aliases: ['דיפים', 'dips', 'dip', 'מקבילים', 'parallel dips', 'מקביל', 'parallel bars', 'bars'],
     cueHe: 'רדו עד שהכתפיים מתחת למרפקים ודחפו חזק למעלה.',
   },
   {
@@ -163,7 +163,7 @@ export const EXERCISES: Exercise[] = [
     nameEn: 'Hollow Body Hold',
     category: 'core',
     level: 'beginner',
-    aliases: ['הולו', 'hollow'],
+    aliases: ['הולו', 'hollow', 'hollow body', 'הולו באודי'],
   },
   {
     id: 'ex_hanging_knee_raise',
@@ -220,6 +220,110 @@ export const EXERCISES: Exercise[] = [
     category: 'skills',
     level: 'beginner',
     aliases: ['פלאנש', 'planche', 'lean'],
+  },
+  {
+    id: 'ex_tuck_planche_lean',
+    nameHe: 'לין טאק פלאנש',
+    nameEn: 'Tuck Planche Lean',
+    category: 'skills',
+    level: 'intermediate',
+    aliases: ['טאק פלאנש', 'tuck planche', 'tuck planche lean', 'פלאנש טאק'],
+    cueHe: 'ברכיים לכיוון החזה, כתפיים קדימה מעל כפות הידיים.',
+  },
+  {
+    id: 'ex_wall_handstand',
+    nameHe: 'עמידת ידיים לקיר',
+    nameEn: 'Wall Handstand',
+    category: 'skills',
+    level: 'intermediate',
+    aliases: ['עמידת ידיים קיר', 'wall handstand', 'wall hs', 'הנדסטנד קיר'],
+    cueHe: 'יד על יד אל הקיר, ליבה חזקה ומבט בין הידיים.',
+  },
+  {
+    id: 'ex_scapular_pullup',
+    nameHe: 'משיכות שכמות',
+    nameEn: 'Scapular Pull-Up',
+    category: 'pull',
+    level: 'beginner',
+    aliases: ['סקפולר', 'scapular', 'scapular pullup', 'scap pull', 'שכמות מתח'],
+    cueHe: 'ידיים ישרות — רק מורידים ומעלים את השכמות.',
+  },
+  {
+    id: 'ex_active_hang',
+    nameHe: 'תלייה פעילה',
+    nameEn: 'Active Hang',
+    category: 'pull',
+    level: 'beginner',
+    aliases: ['תלייה פעילה', 'active hang', 'engaged hang'],
+    cueHe: 'משכו שכמות למטה ולמעלה תוך שמירה על ידיים ישרות.',
+  },
+  {
+    id: 'ex_dip_support',
+    nameHe: 'תמיכה במקבילים',
+    nameEn: 'Dip Support Hold',
+    category: 'push',
+    level: 'beginner',
+    aliases: ['תמיכה', 'support hold', 'dip support', 'lockout מקבילים'],
+    cueHe: 'נעלו מרפקים, כתפיים רחוק מהאוזניים, ליבה מכווצת.',
+  },
+  {
+    id: 'ex_pseudo_planche_pushup',
+    nameHe: 'שכיבות פסאודו-פלאנש',
+    nameEn: 'Pseudo Planche Push-Up',
+    category: 'push',
+    level: 'intermediate',
+    aliases: ['פסאודו פלאנש', 'pseudo planche', 'pppu'],
+    cueHe: 'ידיים נמוכות יותר לכיוון המותן, כתפיים קדימה.',
+  },
+  {
+    id: 'ex_archer_pushup',
+    nameHe: 'שכיבות קשת',
+    nameEn: 'Archer Push-Up',
+    category: 'push',
+    level: 'advanced',
+    aliases: ['ארצ׳ר', 'archer', 'archer pushup'],
+  },
+  {
+    id: 'ex_frog_stand',
+    nameHe: 'עמידת צפרדע',
+    nameEn: 'Frog Stand',
+    category: 'skills',
+    level: 'beginner',
+    aliases: ['צפרדע', 'frog stand', 'crow prep', 'crow'],
+    cueHe: 'ברכיים על הזרועות, העבירו משקל קדימה לאט.',
+  },
+  {
+    id: 'ex_side_plank',
+    nameHe: 'פלאנק צד',
+    nameEn: 'Side Plank',
+    category: 'core',
+    level: 'beginner',
+    aliases: ['פלאנק צדדי', 'side plank', 'lateral plank'],
+  },
+  {
+    id: 'ex_reverse_crunch',
+    nameHe: 'כפיפות בטן הפוכות',
+    nameEn: 'Reverse Crunch',
+    category: 'core',
+    level: 'beginner',
+    aliases: ['כפיפות הפוכות', 'reverse crunch', 'lower abs'],
+  },
+  {
+    id: 'ex_jump_squat',
+    nameHe: 'סקוואט קפיצה',
+    nameEn: 'Jump Squat',
+    category: 'legs',
+    level: 'intermediate',
+    aliases: ['סקוואט ג׳אמפ', 'jump squat', 'squat jump'],
+  },
+  {
+    id: 'ex_skin_the_cat',
+    nameHe: 'סקין דה קאט',
+    nameEn: 'Skin the Cat',
+    category: 'skills',
+    level: 'intermediate',
+    aliases: ['סקין דה קט', 'skin the cat', 'german hang prep'],
+    cueHe: 'ממתח — הברכיים עוברות בין הידיים לאחור באיטיות.',
   },
 ];
 
