@@ -17,3 +17,22 @@ export function getTodayPlan(date: Date = new Date()): DayPlan {
     TODAY_WORKOUTS.find((p) => p.dayKey === key) ?? TODAY_WORKOUTS[0]
   );
 }
+
+/** Look up a Week-1 plan by dayKey; falls back to Sunday if missing. */
+export function getPlanByDayKey(dayKey: DayKey): DayPlan {
+  return TODAY_WORKOUTS.find((p) => p.dayKey === dayKey) ?? TODAY_WORKOUTS[0];
+}
+
+const DAY_KEYS: readonly DayKey[] = [
+  'sun',
+  'mon',
+  'tue',
+  'wed',
+  'thu',
+  'fri',
+  'sat',
+];
+
+export function isDayKey(value: string): value is DayKey {
+  return (DAY_KEYS as readonly string[]).includes(value);
+}

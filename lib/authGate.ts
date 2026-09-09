@@ -97,7 +97,7 @@ export async function fetchOnboardingStatus(
   }
 }
 
-export type GateTarget = '/auth/sign-in' | '/onboarding' | '/(tabs)';
+export type GateTarget = '/auth/sign-in' | '/onboarding' | '/(tabs)/workouts';
 
 /**
  * Resolve navigation target after session + profile settle.
@@ -116,13 +116,13 @@ export async function resolveGateTarget(
   if (status.kind === 'offline') {
     const cached = await getCachedOnboardingCompleted(userId);
     if (cached === true) {
-      return { target: '/(tabs)' };
+      return { target: '/(tabs)/workouts' };
     }
     return { offline: true };
   }
 
   if (status.kind === 'ok' && status.completed) {
-    return { target: '/(tabs)' };
+    return { target: '/(tabs)/workouts' };
   }
 
   // missing profile, !completed, or known non-offline error → onboarding
