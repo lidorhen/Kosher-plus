@@ -5,6 +5,7 @@ import {
   Stack,
   ThemeProvider,
   useRouter,
+  useSegments,
 } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useCallback, useEffect, useState } from 'react';
@@ -158,12 +159,31 @@ function RootLayoutNav() {
     };
   }, [runSettle, retryKey]);
 
-  // After settle, replace to target then reveal (splash held during boot).
+  const segments = useSegments();
+
+  // After settle: hide splash, then redirect only when the user is on the wrong
+  // side of the gate. Do NOT hijack in-app routes (tabs / workout-session) once
+  // onboarding is complete — that was kicking M2 session deep links back to today.
   useEffect(() => {
     if (gate.phase !== 'ready') return;
-    router.replace(gate.target);
     void SplashScreen.hideAsync();
-  }, [gate, router]);
+
+    const root = segments[0];
+    const inAuth = root === 'auth';
+    const inOnboarding = root === 'onboarding';
+    if (gate.target === '/auth/sign-in') {
+      if (!inAuth) router.replace(gate.target);
+      return;
+    }
+    if (gate.target === '/onboarding') {
+      if (!inOnboarding) router.replace(gate.target);
+      return;
+    }
+    // Completed onboarding → tabs default; leave workout-session / tabs alone.
+    if (gate.target === '/(tabs)/workouts') {
+      if (inAuth || inOnboarding) router.replace(gate.target);
+    }
+  }, [gate, router, segments]);
 
   const onRetry = useCallback(() => {
     setGate({ phase: 'booting' });

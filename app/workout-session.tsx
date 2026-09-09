@@ -44,6 +44,7 @@ export default function WorkoutSessionScreen() {
   const [setIndex, setSetIndex] = useState(0); // 0-based
   const [resting, setResting] = useState(false);
   const [restLeft, setRestLeft] = useState(REST_SECONDS);
+  const [done, setDone] = useState(false);
 
   const exerciseIndexRef = useRef(exerciseIndex);
   const setIndexRef = useRef(setIndex);
@@ -52,13 +53,8 @@ export default function WorkoutSessionScreen() {
 
   const finishWorkout = useCallback(() => {
     setResting(false);
-    Alert.alert('כל הכבוד', 'סיימתם את האימון!', [
-      {
-        text: 'סגור',
-        onPress: () => router.replace('/(tabs)/workouts'),
-      },
-    ]);
-  }, [router]);
+    setDone(true);
+  }, []);
 
   const advanceAfterSet = useCallback(() => {
     const ei = exerciseIndexRef.current;
@@ -127,15 +123,35 @@ export default function WorkoutSessionScreen() {
   ]);
 
   const onExit = useCallback(() => {
+    const leave = () => router.back();
+    // Alert.alert is flaky on web — prefer window.confirm there.
+    if (typeof window !== 'undefined' && typeof window.confirm === 'function') {
+      if (window.confirm('לצאת מהאימון? ההתקדמות לא תישמר.')) leave();
+      return;
+    }
     Alert.alert('לצאת מהאימון?', 'ההתקדמות לא תישמר.', [
       { text: 'המשך אימון', style: 'cancel' },
-      {
-        text: 'צא',
-        style: 'destructive',
-        onPress: () => router.back(),
-      },
+      { text: 'צא', style: 'destructive', onPress: leave },
     ]);
   }, [router]);
+
+  if (done) {
+    return (
+      <View style={styles.wrap}>
+        <View style={styles.card}>
+          <Text style={styles.title}>כל הכבוד</Text>
+          <Text style={styles.message}>סיימתם את האימון!</Text>
+          <Pressable
+            style={styles.primaryCta}
+            onPress={() => router.replace('/(tabs)/workouts')}
+            accessibilityRole="button"
+          >
+            <Text style={styles.primaryCtaText}>סגור</Text>
+          </Pressable>
+        </View>
+      </View>
+    );
+  }
 
   if (noWorkout) {
     return (
