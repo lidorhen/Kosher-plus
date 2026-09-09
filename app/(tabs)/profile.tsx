@@ -1,9 +1,24 @@
 import { Link } from 'expo-router';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Alert, Pressable, StyleSheet, Text, View } from 'react-native';
 import Colors from '@/constants/Colors';
-import { isSupabaseConfigured } from '@/lib/supabase';
+import { clearOnboardingCache } from '@/lib/authGate';
+import { getSupabase, isSupabaseConfigured } from '@/lib/supabase';
 
 export default function ProfileScreen() {
+  async function onSignOut() {
+    const client = getSupabase();
+    if (!client) return;
+    const { data } = await client.auth.getSession();
+    const userId = data.session?.user?.id;
+    const { error } = await client.auth.signOut();
+    if (error) {
+      Alert.alert('שגיאה', error.message);
+      return;
+    }
+    if (userId) await clearOnboardingCache(userId);
+    // AuthGate redirects to sign-in on SIGNED_OUT
+  }
+
   return (
     <View style={styles.wrap}>
       <Text style={styles.brand}>{Colors.brand}</Text>
@@ -29,6 +44,12 @@ export default function ProfileScreen() {
           <Text style={[styles.btnText, styles.btnGhostText]}>התחלת Onboarding</Text>
         </Pressable>
       </Link>
+
+      {isSupabaseConfigured ? (
+        <Pressable style={[styles.btn, styles.btnGhost]} onPress={onSignOut}>
+          <Text style={[styles.btnText, styles.btnGhostText]}>התנתק</Text>
+        </Pressable>
+      ) : null}
     </View>
   );
 }
