@@ -7,6 +7,7 @@ import { getSupabase, isSupabaseConfigured } from '@/lib/supabase';
 export default function SignInScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [busy, setBusy] = useState(false);
 
   async function onSubmit() {
     if (!isSupabaseConfigured) {
@@ -15,9 +16,21 @@ export default function SignInScreen() {
     }
     const client = getSupabase();
     if (!client) return;
-    const { error } = await client.auth.signInWithPassword({ email, password });
-    if (error) Alert.alert('שגיאה', error.message);
-    else Alert.alert('הצלחה', 'התחברת בהצלחה');
+    setBusy(true);
+    try {
+      const { error } = await client.auth.signInWithPassword({ email, password });
+      if (error) {
+        Alert.alert('שגיאה', error.message);
+        return;
+      }
+      // AuthGate listens to onAuthStateChange and redirects — no success Alert.
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  function onOAuthStub() {
+    Alert.alert('כושר פלוס', 'בקרוב');
   }
 
   return (
@@ -45,9 +58,20 @@ export default function SignInScreen() {
         onChangeText={setPassword}
         textAlign="right"
       />
-      <Pressable style={styles.btn} onPress={onSubmit}>
+      <Pressable
+        style={[styles.btn, busy && styles.btnDisabled]}
+        onPress={onSubmit}
+        disabled={busy}>
         <Text style={styles.btnText}>התחבר</Text>
       </Pressable>
+
+      <Pressable style={styles.oauthBtn} onPress={onOAuthStub}>
+        <Text style={styles.oauthText}>המשך עם Apple</Text>
+      </Pressable>
+      <Pressable style={styles.oauthBtn} onPress={onOAuthStub}>
+        <Text style={styles.oauthText}>המשך עם Google</Text>
+      </Pressable>
+
       <Link href="/auth/sign-up" style={styles.link}>
         אין חשבון? להרשמה
       </Link>
@@ -88,7 +112,23 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 8,
   },
+  btnDisabled: { opacity: 0.5 },
   btnText: { color: '#fff', fontWeight: '700', fontSize: 16 },
+  oauthBtn: {
+    marginTop: 12,
+    padding: 14,
+    borderRadius: 12,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: Colors.light.border,
+    backgroundColor: Colors.light.card,
+  },
+  oauthText: {
+    color: Colors.light.text,
+    fontWeight: '600',
+    fontSize: 16,
+    writingDirection: 'rtl',
+  },
   link: {
     marginTop: 16,
     textAlign: 'center',
