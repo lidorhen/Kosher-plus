@@ -1,7 +1,6 @@
-import { Link } from 'expo-router';
+import { Link, useRouter } from 'expo-router';
 import { useMemo } from 'react';
 import {
-  Alert,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -15,10 +14,14 @@ const BOX_BREATHING_COPY =
   'נשימת קופסה — 2 דקות (שאיפה 4 · החזקה 4 · נשיפה 4 · החזקה 4)';
 
 export default function WorkoutsScreen() {
+  const router = useRouter();
   const plan = useMemo(() => getTodayPlan(), []);
 
   const onStartWorkout = () => {
-    Alert.alert('בקרוב', 'בקרוב — WorkoutSession ב־M2');
+    router.push({
+      pathname: '/workout-session',
+      params: { dayKey: plan.dayKey },
+    });
   };
 
   return (
